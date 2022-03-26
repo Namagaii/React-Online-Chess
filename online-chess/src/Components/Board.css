@@ -1,0 +1,27 @@
+.light-square{
+    background-color: #7C4C3E;
+    color: black;
+    height: 75px;
+    width: 75px;
+    padding: 0px;
+    font-weight: bold;
+}
+
+.dark-square{
+    background-color: #512A2A;
+    color: white;
+    height: 75px;
+    width: 75px;
+    padding: 0px;
+    font-weight: bold;
+
+}
+
+.chess-board{
+    display: flex;
+    flex-flow: row-reverse wrap;
+    position: absolute;
+    left: 33%;
+    top: 15%;
+    border: 5px solid black;
+}

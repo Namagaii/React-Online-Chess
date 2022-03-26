@@ -1,0 +1,7 @@
+.piece{
+    width: 75%;
+    height: 75%;
+    position: relative;
+    top: 10px;
+    left: 10px;
+}
