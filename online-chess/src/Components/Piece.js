@@ -2,6 +2,8 @@ import React from 'react';
 import './Piece.css';
 import { useSelector, useDispatch } from 'react-redux';
 import { update } from '../actions';
+import { getMoves } from '../logic';
+import { displayDots, hideDots } from '../helper/square';
 
 const WHITE = "white";
 const BLACK = "black";
@@ -49,26 +51,35 @@ function Piece(props) {
     const pieceColor = getPieceColor(props.name)
     //TODO: Add the square the piece is on to that alt text
     const drag = (event) => {
-        event.dataTransfer.setData("PieceData", JSON.stringify({coords: props.coords, name: props.name, color: pieceColor}));
+        const moveList = getMoves({coords: props.coords, name: props.name, color: pieceColor})
+        event.dataTransfer.setData("PieceData", JSON.stringify({coords: props.coords, name: props.name, color: pieceColor, moveList: moveList}));
+        displayDots(moveList)
     }
     const allowDrop = (event) => {
         event.preventDefault();
     }
     const drop = (event) => {
         event.preventDefault();
+        hideDots()
         if (event.target.tagName === "DIV"){
             return;
         }
         const pieceData = JSON.parse(event.dataTransfer.getData("PieceData"));
-        // If piece is being placed on itself
-        if ((pieceData.coords.x === props.coords.x && pieceData.coords.y === props.coords.y) || pieceData.color === pieceColor){
-            console.log("You can't kill yourself or your own pieces!!!")
-            return;
+        if (!pieceData) {return;}
+        // Check if the move is valid
+        let isValid = false;
+        for(let i = 0; i < pieceData.moveList.length; i++){
+            if ((pieceData.moveList[i].x === props.coords.x) && (pieceData.moveList[i].y === props.coords.y)){
+                isValid = true;
+                break;
+            }
         }
-        let newBoard = board;
-        newBoard[props.coords.x][props.coords.y] = pieceData.name;
-        newBoard[pieceData.coords.x][pieceData.coords.y] = 'X';
-        dispatch(update(newBoard))
+        if(isValid){
+            let newBoard = board;
+            newBoard[props.coords.x][props.coords.y] = pieceData.name;
+            newBoard[pieceData.coords.x][pieceData.coords.y] = 'X';
+            dispatch(update(newBoard))
+        }
     }
 
     return (

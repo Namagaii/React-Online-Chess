@@ -3,38 +3,19 @@ import { useSelector, useDispatch } from 'react-redux';
 import { update, boardSubscribe } from '../actions';
 import { getBoardState } from '../logic';
 import './Board.css'
-import Piece from './Piece'
-import getPieceSprite from '../pieces';
+import Square from './Square'
 
 const calculateSquareColor = (squareNum) => {
     return squareNum % 2 === 0 ? "dark-square" : "light-square";
 }
-const allowDrop = (event) => {
-    event.preventDefault();
-}
 function Board() {
     const board = useSelector(state => state.board);
     const dispatch = useDispatch();
-    const drop = (event) => {
-        event.preventDefault();
-        if (event.target.tagName === "IMG"){
-            return;
-        }
-        let pieceData = JSON.parse(event.dataTransfer.getData("PieceData"));
-        let squareCoords = JSON.parse(event.target.getAttribute("coords"));
-        let newBoard = board;
-        //Placing the piece at the destination
-        newBoard[squareCoords.x][squareCoords.y] = pieceData.name;
-        //Clearing square where piece used to be
-        newBoard[pieceData.coords.x][pieceData.coords.y] = 'X';
-        dispatch(update(newBoard))
-    }
 
     const generateRow = (board, x, colorOffset) => {
         let boardRow = []
         for (let y = 0; y < 8; y++){
-            let coords = {x:x, y:y};
-            boardRow.push(<div className = {calculateSquareColor((x * board[x].length + y) + colorOffset)} key = {y} onDragOver={allowDrop} onDrop={drop} coords={JSON.stringify(coords)}>{board[x][y] === "X" ? '' : <Piece img={getPieceSprite(board[x][y])} name = {board[x][y]} coords={coords}/>}</div>)
+            boardRow.push(<Square squareData = {{ coords: {x:x, y:y}, color: calculateSquareColor((x * board[x].length + y) + colorOffset) }} key = {y} />)
         } 
         return boardRow
     }
@@ -54,11 +35,12 @@ function Board() {
     const updateBoard = (board) => {
         setBoardState(generateBoard(board))
     }
+    const [boardState, setBoardState] = useState('InitialValue');
     useEffect(() => {
         dispatch(boardSubscribe('getBoardState', getBoardState));
         dispatch(boardSubscribe('generateBoard', updateBoard));
+        dispatch(update(board))
     }, [])
-    const [boardState, setBoardState] = useState(generateBoard(board));
     return (
         <div className='chess-board'>
         {boardState} 

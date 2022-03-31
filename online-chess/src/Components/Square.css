@@ -1,0 +1,32 @@
+.light-square{
+    background-color: #7C4C3E;
+    color: black;
+    height: 75px;
+    width: 75px;
+    padding: 0px;
+    font-weight: bold;
+}
+
+.dark-square{
+    background-color: #512A2A;
+    color: white;
+    height: 75px;
+    width: 75px;
+    padding: 0px;
+    font-weight: bold;
+}
+
+.dot-active {
+    height: 25px;
+    width: 25px;
+    background-color: rgba(144, 144, 144, 0.281);
+    border-radius: 50%;
+    display: block;
+    position: relative;
+    top: 25px;
+    left: 25px
+}
+
+.dot-inactive {
+    display: none;
+}
