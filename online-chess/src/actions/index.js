@@ -27,3 +27,24 @@ export const boardUnsubscribe = (name) =>{
         payload: name
     }
 }
+
+export const setTeam = (teamName) => {
+    return {
+        type: 'SET-TEAM',
+        payload: teamName
+    }
+}
+
+export const teamChangedSubscribe = (name, callback) => {
+    return {
+        type: 'TEAM-SUBSCRIBE',
+        payload: {name: name, cb: callback}
+    }
+}
+
+export const teamChangedUnsubscribe = (name) => {
+    return {
+        type: 'TEAM-UNSUBSCRIBE',
+        payload: name
+    }
+}

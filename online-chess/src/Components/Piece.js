@@ -4,17 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { update } from '../actions';
 import { getMoves } from '../logic';
 import { displayDots, hideDots } from '../helper/square';
-
-const WHITE = "white";
-const BLACK = "black";
-const getPieceColor = (name) => {
-    //If uppercase then white if lowercase black
-    if (name === name.toUpperCase()){
-        return WHITE;
-    } else {
-        return BLACK;
-    }
-}
 const generateAltText = (pieceInfo) => {
     switch(pieceInfo.name){
         case "K":
@@ -46,14 +35,16 @@ const generateAltText = (pieceInfo) => {
     }
 }
 function Piece(props) {
+    props.piece.setCoords(props.coords.x, props.coords.y)
     const board = useSelector(state => state.board);
     const dispatch = useDispatch();
-    const pieceColor = getPieceColor(props.name)
     //TODO: Add the square the piece is on to that alt text
     const drag = (event) => {
-        const moveList = getMoves({coords: props.coords, name: props.name, color: pieceColor})
-        event.dataTransfer.setData("PieceData", JSON.stringify({coords: props.coords, name: props.name, color: pieceColor, moveList: moveList}));
-        displayDots(moveList)
+        console.log("Piece: ")
+        console.log(props.piece)
+        props.piece.setMoveList(getMoves(props.piece));
+        event.dataTransfer.setData("PieceData", JSON.stringify(props.piece));
+        displayDots(props.piece.moveList);
     }
     const allowDrop = (event) => {
         event.preventDefault();
@@ -76,14 +67,15 @@ function Piece(props) {
         }
         if(isValid){
             let newBoard = board;
-            newBoard[props.coords.x][props.coords.y] = pieceData.name;
+            newBoard[props.coords.x][props.coords.y] = pieceData.pieceName;
+            pieceData.setCoords(props.coords.x, props.coords.y);
             newBoard[pieceData.coords.x][pieceData.coords.y] = 'X';
             dispatch(update(newBoard))
         }
     }
 
     return (
-    <img src = {props.img} alt={generateAltText({name: props.name})} className = "piece" draggable={true} onDragStart={drag} onDragOver={allowDrop} onDrop={drop}></img>
+    <img src = {props.piece.sprite} alt={generateAltText({name: props.piece.pieceName})} className = "piece" draggable={true} onDragStart={drag} onDragOver={allowDrop} onDrop={drop}></img>
     )
 }
 

@@ -12,6 +12,27 @@ import WHITEROOK from '.././assets/Pieces/1x/w_rook_1x.png';
 import WHITEPAWN from '.././assets/Pieces/1x/w_pawn_1x.png';
 import ERROR from '.././assets/Pieces/1x/error-texture.png';
 
+export class Piece {
+    constructor(name, color, moveList = []){
+        this.coords = {};
+        this.pieceName = name;
+        this.color = color;
+        this.moveList = moveList;
+        this.sprite = getPieceSprite(name);
+    }
+
+    setCoords (x, y){
+        this.coords = { 
+            x: x,
+            y: y
+        }
+    }
+    
+    setMoveList(moves){
+        this.moveList = moves
+    }
+}
+
 const getPieceSprite = (pieceName) =>{
     switch(pieceName){
         case "K":
@@ -55,4 +76,3 @@ const getPieceSprite = (pieceName) =>{
     }
 }
 
-export default getPieceSprite;

@@ -5,38 +5,37 @@
 */
 let board;
 let moves = []
-const WHITE = "white";
-const BLACK = "black";
+const WHITE = "WHITE"
 export const getBoardState = (p_board) => {
     board = p_board;
 }
 
-export const getMoves = (pieceData) => {
+export const getMoves = (piece) => {
     moves = []
-    switch(pieceData.name.toLowerCase()){
+    switch(piece.pieceName.toLowerCase()){
         //King
         case 'k':
-            getKingMoves(pieceData)
+            getKingMoves(piece)
             break;
         //Queen
         case 'q':
-            getQueenMoves(pieceData)
+            getQueenMoves(piece)
             break;
         //Bishop
         case 'b':
-            getBishopMoves(pieceData)
+            getBishopMoves(piece)
             break;
         //Knight
         case 'n':
-            getKnightMoves(pieceData)
+            getKnightMoves(piece)
             break;
         //Rook
         case 'r':
-            getRookMoves(pieceData)
+            getRookMoves(piece)
             break;
         //Pawn
         case 'p':
-            getPawnMoves(pieceData)
+            getPawnMoves(piece)
             break;
         default:
             console.warn('Piece Invalid')
@@ -49,10 +48,10 @@ const checkCoords = (x, y) => {
     return (!((x < 0) || (x >= board.length)) && !((y < 0) || (y >= board[x].length)))
 }
 
-const checkDirection = (pieceData, directionCoords, speed) => {
+const checkDirection = (piece, directionCoords, speed) => {
     //Comment regarding dingleberry: Lily made me, Amount of moves in the set direction
     for(let dingleberry = 1; dingleberry <= speed; dingleberry++){
-        if (!checkSquare(pieceData.coords.x+(dingleberry * directionCoords.x), pieceData.coords.y+(dingleberry * directionCoords.y), pieceData.color)){
+        if (!checkSquare(piece.coords.x+(dingleberry * directionCoords.x), piece.coords.y+(dingleberry * directionCoords.y), piece.color)){
             break;
         }
     }
@@ -70,7 +69,7 @@ const checkSquare = (x, y, color) => {
         moves.push(coords);
     } else {
         //If Enemy team
-        if (getTeam(board[coords.x][coords.y]) !== color){
+        if (board[coords.x][coords.y].color !== color){
             //Will moving here put king in check?
             moves.push(coords)
         }
@@ -79,161 +78,153 @@ const checkSquare = (x, y, color) => {
     return true;
 }
 
-const getKingMoves = (pieceData) => {
+const getKingMoves = (piece) => {
     const SPEED = 1
     //Check locations in the kings range
     //Top
-    checkDirection(pieceData, {x: 0, y: 1}, SPEED);
+    checkDirection(piece, {x: 0, y: 1}, SPEED);
     //Top right
-    checkDirection(pieceData, {x: 1, y: 1}, SPEED)
+    checkDirection(piece, {x: 1, y: 1}, SPEED)
     //Top Left
-    checkDirection(pieceData, {x: -1, y: 1}, SPEED)
+    checkDirection(piece, {x: -1, y: 1}, SPEED)
     //Right
-    checkDirection(pieceData, {x: 1, y: 0}, SPEED)
+    checkDirection(piece, {x: 1, y: 0}, SPEED)
     //Left
-    checkDirection(pieceData, {x: -1, y: 0}, SPEED)
+    checkDirection(piece, {x: -1, y: 0}, SPEED)
     //Bottom
-    checkDirection(pieceData, {x: 0, y: -1}, SPEED)
+    checkDirection(piece, {x: 0, y: -1}, SPEED)
     //Bottom Right
-    checkDirection(pieceData, {x: 1, y: -1}, SPEED)
+    checkDirection(piece, {x: 1, y: -1}, SPEED)
     //Bottom Left
-    checkDirection(pieceData, {x: -1, y: -1}, SPEED)
+    checkDirection(piece, {x: -1, y: -1}, SPEED)
 }
-const getQueenMoves = (pieceData) => {
+const getQueenMoves = (piece) => {
     const SPEED = 7;
     //Check the directions the queen can move in
     //Top
-    checkDirection(pieceData, {x: 0, y: 1}, SPEED);
+    checkDirection(piece, {x: 0, y: 1}, SPEED);
     //Top right
-    checkDirection(pieceData, {x: 1, y: 1}, SPEED)
+    checkDirection(piece, {x: 1, y: 1}, SPEED)
     //Top Left
-    checkDirection(pieceData, {x: -1, y: 1}, SPEED)
+    checkDirection(piece, {x: -1, y: 1}, SPEED)
     //Right
-    checkDirection(pieceData, {x: 1, y: 0}, SPEED)
+    checkDirection(piece, {x: 1, y: 0}, SPEED)
     //Left
-    checkDirection(pieceData, {x: -1, y: 0}, SPEED)
+    checkDirection(piece, {x: -1, y: 0}, SPEED)
     //Bottom
-    checkDirection(pieceData, {x: 0, y: -1}, SPEED)
+    checkDirection(piece, {x: 0, y: -1}, SPEED)
     //Bottom Right
-    checkDirection(pieceData, {x: 1, y: -1}, SPEED)
+    checkDirection(piece, {x: 1, y: -1}, SPEED)
     //Bottom Left
-    checkDirection(pieceData, {x: -1, y: -1}, SPEED)
+    checkDirection(piece, {x: -1, y: -1}, SPEED)
 }
-const getBishopMoves = (pieceData) => {
+const getBishopMoves = (piece) => {
     const SPEED = 7;
     //Check the directions the Bishop can move in
     //Top right
-    checkDirection(pieceData, {x: 1, y: 1}, SPEED)
+    checkDirection(piece, {x: 1, y: 1}, SPEED)
     //Top Left
-    checkDirection(pieceData, {x: -1, y: 1}, SPEED)
+    checkDirection(piece, {x: -1, y: 1}, SPEED)
     //Bottom Right
-    checkDirection(pieceData, {x: 1, y: -1}, SPEED)
+    checkDirection(piece, {x: 1, y: -1}, SPEED)
     //Bottom Left
-    checkDirection(pieceData, {x: -1, y: -1}, SPEED)
+    checkDirection(piece, {x: -1, y: -1}, SPEED)
 }
-const getKnightMoves = (pieceData) => {
+const getKnightMoves = (piece) => {
     //Check squares knight can jump to
     //Top Right Pair
-    checkSquare(pieceData.coords.x + 1, pieceData.coords.y + 2, pieceData.color)
-    checkSquare(pieceData.coords.x + 2, pieceData.coords.y + 1, pieceData.color)
+    checkSquare(piece.coords.x + 1, piece.coords.y + 2, piece.color)
+    checkSquare(piece.coords.x + 2, piece.coords.y + 1, piece.color)
     //Top Left Pair
-    checkSquare(pieceData.coords.x - 1, pieceData.coords.y + 2, pieceData.color)
-    checkSquare(pieceData.coords.x - 2, pieceData.coords.y + 1, pieceData.color)
+    checkSquare(piece.coords.x - 1, piece.coords.y + 2, piece.color)
+    checkSquare(piece.coords.x - 2, piece.coords.y + 1, piece.color)
     //Bottom Right Pair
-    checkSquare(pieceData.coords.x + 1, pieceData.coords.y - 2, pieceData.color)
-    checkSquare(pieceData.coords.x + 2, pieceData.coords.y - 1, pieceData.color)
+    checkSquare(piece.coords.x + 1, piece.coords.y - 2, piece.color)
+    checkSquare(piece.coords.x + 2, piece.coords.y - 1, piece.color)
     //Bottom Left Pair
-    checkSquare(pieceData.coords.x - 1, pieceData.coords.y - 2, pieceData.color)
-    checkSquare(pieceData.coords.x - 2, pieceData.coords.y - 1, pieceData.color)
+    checkSquare(piece.coords.x - 1, piece.coords.y - 2, piece.color)
+    checkSquare(piece.coords.x - 2, piece.coords.y - 1, piece.color)
 }
-const getRookMoves = (pieceData) => {
+const getRookMoves = (piece) => {
     const SPEED = 7;
     //Check the directions the Rook can move in
     //Top
-    checkDirection(pieceData, {x: 0, y: 1}, SPEED);
+    checkDirection(piece, {x: 0, y: 1}, SPEED);
     //Right
-    checkDirection(pieceData, {x: 1, y: 0}, SPEED)
+    checkDirection(piece, {x: 1, y: 0}, SPEED)
     //Left
-    checkDirection(pieceData, {x: -1, y: 0}, SPEED)
+    checkDirection(piece, {x: -1, y: 0}, SPEED)
     //Bottom
-    checkDirection(pieceData, {x: 0, y: -1}, SPEED)
+    checkDirection(piece, {x: 0, y: -1}, SPEED)
 }
-const getPawnMoves = (pieceData) => {
+const getPawnMoves = (piece) => {
     //Check if pawn is on starting square
-    if (pieceData.color === WHITE){
+    if (piece.color === WHITE){
          //Check the rush
-        if (pieceData.coords.y === 6){
-            if (checkCoords(pieceData.coords.x, pieceData.coords.y - 2)) {
-                if (board[pieceData.coords.x][pieceData.coords.y - 2] === 'X'){
+        if (piece.coords.y === 6){
+            if (checkCoords(piece.coords.x, piece.coords.y - 2)) {
+                if (board[piece.coords.x][piece.coords.y - 2] === 'X'){
                     //Does move put you in check?
-                    moves.push({x:pieceData.coords.x, y:pieceData.coords.y - 2})
+                    moves.push({x:piece.coords.x, y:piece.coords.y - 2})
                 }
             }
         }
         //Check the square directly infront
-        if (checkCoords(pieceData.coords.x, pieceData.coords.y - 1)){
-            if (board[pieceData.coords.x][pieceData.coords.y - 1] === 'X'){
+        if (checkCoords(piece.coords.x, piece.coords.y - 1)){
+            if (board[piece.coords.x][piece.coords.y - 1] === 'X'){
                 //Does move put you in check?
-                moves.push({x: pieceData.coords.x, y: pieceData.coords.y - 1})
+                moves.push({x: piece.coords.x, y: piece.coords.y - 1})
             }
         }
         //Check the take squares
         //Right
-        if (checkCoords(pieceData.coords.x + 1, pieceData.coords.y - 1)){
-            if (getTeam(board[pieceData.coords.x + 1][pieceData.coords.y - 1]) !== pieceData.color){
+        if (checkCoords(piece.coords.x + 1, piece.coords.y - 1)){
+            if (board[piece.coords.x + 1][piece.coords.y - 1].color !== piece.color){
                 //Does move put you in check?
-                moves.push({x: pieceData.coords.x + 1, y: pieceData.coords.y - 1})
+                moves.push({x: piece.coords.x + 1, y: piece.coords.y - 1})
             }
         }
         //Left
-        if (checkCoords(pieceData.coords.x - 1, pieceData.coords.y - 1)){
-            if (getTeam(board[pieceData.coords.x - 1][pieceData.coords.y - 1]) !== pieceData.color){
+        if (checkCoords(piece.coords.x - 1, piece.coords.y - 1)){
+            if (board[piece.coords.x - 1][piece.coords.y - 1].color !== piece.color){
                 //Does move put you in check?
-                moves.push({x: pieceData.coords.x - 1, y: pieceData.coords.y - 1})
+                moves.push({x: piece.coords.x - 1, y: piece.coords.y - 1})
             }
         }
         //Figure out en passant
     } else {
         //Check the rush
-        if (pieceData.coords.y === 1){
-            if (checkCoords(pieceData.coords.x, pieceData.coords.y + 2)) {
-                if (board[pieceData.coords.x][pieceData.coords.y + 2] === 'X'){
+        if (piece.coords.y === 1){
+            if (checkCoords(piece.coords.x, piece.coords.y + 2)) {
+                if (board[piece.coords.x][piece.coords.y + 2] === 'X'){
                     //Does move put you in check?
-                    moves.push({x:pieceData.coords.x, y:pieceData.coords.y + 2})
+                    moves.push({x:piece.coords.x, y:piece.coords.y + 2})
                 }
             }
         }
         //Check the square directly infront
-        if (checkCoords(pieceData.coords.x, pieceData.coords.y + 1)){
-            if (board[pieceData.coords.x][pieceData.coords.y + 1] === 'X'){
+        if (checkCoords(piece.coords.x, piece.coords.y + 1)){
+            if (board[piece.coords.x][piece.coords.y + 1] === 'X'){
                 //Does move put you in check?
-                moves.push({x: pieceData.coords.x, y: pieceData.coords.y + 1})
+                moves.push({x: piece.coords.x, y: piece.coords.y + 1})
             }
         }
         //Check the take squares
         //Right
-        if (checkCoords(pieceData.coords.x + 1, pieceData.coords.y + 1)){
-            if (getTeam(board[pieceData.coords.x + 1][pieceData.coords.y + 1]) !== pieceData.color){
+        if (checkCoords(piece.coords.x + 1, piece.coords.y + 1)){
+            if (board[piece.coords.x + 1][piece.coords.y + 1].color !== piece.color){
                 //Does move put you in check?
-                moves.push({x: pieceData.coords.x + 1, y: pieceData.coords.y + 1})
+                moves.push({x: piece.coords.x + 1, y: piece.coords.y + 1})
             }
         }
         //Left
-        if (checkCoords(pieceData.coords.x - 1, pieceData.coords.y + 1)){
-            if (getTeam(board[pieceData.coords.x - 1][pieceData.coords.y + 1]) !== pieceData.color){
+        if (checkCoords(piece.coords.x - 1, piece.coords.y + 1)){
+            if (board[piece.coords.x - 1][piece.coords.y + 1].color !== piece.color){
                 //Does move put you in check?
-                moves.push({x: pieceData.coords.x - 1, y: pieceData.coords.y + 1})
+                moves.push({x: piece.coords.x - 1, y: piece.coords.y + 1})
             }
         }
         //Figure out en passant
     }
 
-}
-
-const getTeam = (name) => {
-    if (name === name.toUpperCase()){
-        return WHITE;
-    } else {
-        return BLACK;
-    }
 }
