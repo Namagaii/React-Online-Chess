@@ -2,11 +2,16 @@
 .chess-board{
     display: block;
     position: absolute;
-    left: 33%;
-    top: 15%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     border: 5px solid black;
+    width: fit-content;
+    height: fit-content;
 }
 
 .board-row{
-    display: inline-block;
+    display: block;
+    position: relative;
+    height: 75px;
 }

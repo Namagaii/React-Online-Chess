@@ -1,50 +1,39 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Piece from './Piece'
+import {Square as c_Square} from '../helpers/square.js'
 import { useSelector, useDispatch } from 'react-redux';
-import { update } from '../actions';
 import './Square.css'
-import { displayDotSubscribe, hideDots } from '../helper/square';
-
-const allowDrop = (event) => {
-    event.preventDefault();
-}
-
 function Square(props) {
+    console.log(`Coords: (${props.coords.x}, ${props.coords.y})`)
     const board = useSelector(state => state.board);
-    const dispatch = useDispatch();
-    const piece = board[props.squareData.coords.x][props.squareData.coords.y];
-    const [displayDot, setDisplayDot] = useState(false)
-    const drop = (event) => {
-        event.preventDefault();
-        hideDots();
-        if (event.target.tagName === "IMG"){
-            return;
+    const piece = board[props.coords.x][props.coords.y];
+    const [showIndicator, setShowIndicator] = useState(false);
+    const generateContent = (containsPiece) => {
+        let output;
+        if (containsPiece && containsPiece !== 'X'){
+            output = {
+                piece: (<Piece piece = {piece} coords = {props.coords} />),
+                indicator: (<span className= {(showIndicator ? 'active' : 'inactive') + ' indicator-circle' }></span>)
+            };
+        } else {
+            output = {
+                piece: "",
+                indicator: (<span className= {(showIndicator ? 'active' : 'inactive') + ' indicator-dot'}></span>)
+            };
         }
-        let pieceData = JSON.parse(event.dataTransfer.getData("PieceData"));
-        console.log(pieceData)
-        // Check if the move is valid
-        let isValid = false;
-        for(let i = 0; i < pieceData.moveList.length; i++){
-            if ((pieceData.moveList[i].x === props.squareData.coords.x) && (pieceData.moveList[i].y === props.squareData.coords.y)){
-                isValid = true;
-                break;
-            }
-        }
-        if(isValid){
-            //TODO: Create a better way to update the board 
-            let newBoard = board;
-            newBoard[props.squareData.coords.x][props.squareData.coords.y] = pieceData.name;
-            pieceData.setCoords(props.squareData.coords.x, props.squareData.coords.y)
-            newBoard[pieceData.coords.x][pieceData.coords.y] = 'X';
-            dispatch(update(newBoard))
-        }
+        return output;
     }
-    useEffect(() => {
-        displayDotSubscribe(props.squareData.coords.x, props.squareData.coords.y, setDisplayDot);
-    }, [])
+    let square = new c_Square(generateContent(piece), props.coords.x, props.coords.y);
+    const [content, setContent] = useState(square.contentData);
+    square.setContentSetter(setContent);
+    square.setShowIndicatorSetter(setShowIndicator);
+
     return (
-        <div className = {"square "+props.squareData.color} onDragOver={allowDrop} onDrop={drop}>{piece === "X" ? '' : <Piece piece={piece} coords={props.squareData.coords}/>}{piece === 'X' ? <span className={displayDot ? 'dot-active': 'dot-inactive'}></span> : ''}</div>
-    )
+        <div className = {"square " + props.squareColor} >
+            {content.piece === "" ? "" : content.piece}
+            {content.indicator === "" ? () => {console.warn(`No indicator was set at square (${props.coords.x}, ${props.coords.y}).`)} : content.indicator}
+        </div>
+    );
 }
 
 export default Square

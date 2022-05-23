@@ -1,32 +1,50 @@
-.light-square{
-    background-color: #7C4C3E;
-    color: black;
+.square {
     height: 75px;
     width: 75px;
     padding: 0px;
-    font-weight: bold;
+    display: inline-block;
+    position: relative;
+}
+
+.light-square{
+    background-color: #7C4C3E;
 }
 
 .dark-square{
     background-color: #512A2A;
-    color: white;
-    height: 75px;
-    width: 75px;
-    padding: 0px;
-    font-weight: bold;
 }
 
-.dot-active {
+.indicator-dot {
     height: 25px;
     width: 25px;
-    background-color: rgba(144, 144, 144, 0.281);
+    background-color: rgba(172, 172, 172, 0.43);
     border-radius: 50%;
-    display: block;
-    position: relative;
-    top: 25px;
-    left: 25px
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
-.dot-inactive {
+.indicator-circle {
+    height: 70px;
+    width: 70px;
+    background-color: rgba(154, 153, 153, 0.644);
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    mask-image: none;
+    -webkit-mask-image: radial-gradient(30px at 50% 50% , transparent 100%, black 100%); /*Solution taken from https://codepen.io/redders6600/pen/BNROoN by Ed Hinchliffe*/
+    z-index: 0;
+}
+
+.active {
+    display: inline-block;
+}
+
+.inactive {
     display: none;
 }

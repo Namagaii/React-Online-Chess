@@ -15,7 +15,7 @@ import ERROR from '.././assets/Pieces/1x/error-texture.png';
 export class Piece {
     constructor(name, color, moveList = []){
         this.coords = {};
-        this.pieceName = name;
+        this.name = name;
         this.color = color;
         this.moveList = moveList;
         this.sprite = getPieceSprite(name);

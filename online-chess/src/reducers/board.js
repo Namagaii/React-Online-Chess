@@ -1,4 +1,4 @@
-import { Piece } from "../helper/pieces"
+import { Piece } from "../helpers/pieces"
 const whiteRook1 = new Piece('R', 'WHITE')
 const whiteKnight1 = new Piece('N', 'WHITE')
 const whiteBishop1 = new Piece('B', 'WHITE')
@@ -36,15 +36,15 @@ const blackPawns = [
     new Piece('p', 'BLACK')
 ]
 const initialBoard = [
-    [whiteRook2, whitePawns[7],'X','X','X','X', blackPawns[7], blackRook2],
-    [whiteKnight2, whitePawns[6],'X','X','X','X', blackPawns[6], blackKnight2],
-    [whiteBishop2, whitePawns[5],'X','X','X','X', blackPawns[5], blackBishop2],
-    [whiteQueen, whitePawns[4],'X','X','X','X', blackPawns[4], blackQueen],
-    [whiteKing, whitePawns[3],'X','X','X','X', blackPawns[3], blackKing],
-    [whiteBishop1, whitePawns[2],'X','X','X','X', blackPawns[2], blackBishop1],
-    [whiteKnight1, whitePawns[1],'X','X','X','X', blackPawns[1], blackKnight1],
-    [whiteRook1, whitePawns[0],'X','X','X','X', blackPawns[0], blackRook1]
-]
+    [blackRook1, blackKnight1, blackBishop1, blackQueen, blackKing, blackBishop2, blackKnight2, blackRook2],
+    [blackPawns[0], blackPawns[1], blackPawns[2], blackPawns[3], blackPawns[4], blackPawns[5], blackPawns[6], blackPawns[7]],
+    ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+    ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+    ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+    ['X', 'X', 'X', 'X', 'X', 'X', 'X', 'X'],
+    [whitePawns[0], whitePawns[1], whitePawns[2], whitePawns[3], whitePawns[4], whitePawns[5], whitePawns[6], whitePawns[7]],
+    [whiteRook1, whiteKnight1, whiteBishop1, whiteQueen, whiteKing, whiteBishop2, whiteKnight2, whiteRook2]
+];
 /*
 subscribers format: 
 [
@@ -54,35 +54,13 @@ subscribers format:
     }
 ]
 */
-let subscribers = []
 const boardReducer = (state = initialBoard, action) => {
     switch(action.type){
         case 'BOARD-UPDATE':
             state = action.payload
-            subscribers.forEach(subscriber => {
-                subscriber.cb(state);
-            });
             return state;
         case 'BOARD-GET':
             return action.payload;
-        case 'BOARD-SUBSCRIBE':
-            subscribers.push({name: action.payload.name, cb: action.payload.cb})
-            console.log("Subscribed function: "+action.payload.name)
-            console.log("Subscibers:")
-            console.log(subscribers)
-            return state;
-        case 'BOARD-UNSUBSCRIBE':
-            for(let i = 0; i < subscribers.length; i++){
-                if (subscribers[i].name === action.payload){
-                    subscribers = subscribers.splice(i,1)
-                    console.log("Subscriber: "+action.payload+" was successfully removed.");
-                    console.log("Subscibers:")
-                    console.log(subscribers)
-                    return state;
-                }
-            }
-            console.log("No subscriber was found by the name: " + action.payload)
-            return state;
         default: 
             return state;
     }
