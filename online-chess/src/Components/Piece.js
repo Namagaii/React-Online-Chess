@@ -1,8 +1,10 @@
 import React from 'react';
+import { handleDragStart, handleDrop } from '../helpers/dragHelper';
+import Board from '../logic/board';
 import './Piece.css';
-import Square from '../helpers/square.js';
 
 const generateAltText = (pieceInfo) => {
+    //TODO: Add the square the piece is on to that alt text
     switch(pieceInfo.name){
         case "K":
             return "White King";
@@ -32,13 +34,27 @@ const generateAltText = (pieceInfo) => {
             return "Unidentifed object on square."
     }
 }
+
 function Piece(props) {
-    if (props.piece){
-        props.piece.setCoords(props.coords.x, props.coords.y);
+    let piece = props.piece;
+    if (piece){
+        piece.setCoords(props.coords.x, props.coords.y);
+    } else {
+        console.warn("Piece component initialized without accompaning piece object. Attempting to find piece object.")
+        piece = Board.board[props.coords.x][props.coords.y];
+        if (!piece){
+            console.warn(`No piece found at coords: (${props.coords.x}, ${props.coords.y}) returning nothing.`)
+            return "";
+        }
     }
-    //TODO: Add the square the piece is on to that alt text
+    const processDragStart = (event) => {
+        handleDragStart(event, piece);
+    }
+    const processDrop = (event) => {
+        handleDrop(event, props.coords)
+    }
     return (
-        <img src = {props.piece.sprite} alt={generateAltText({name: props.piece.pieceName})} className = "piece"></img>
+        <img src = {piece.sprite} alt={generateAltText({name: piece.pieceName})} className = "piece" onDragStart={processDragStart} onDrop={processDrop}></img>
     );
 }
 
