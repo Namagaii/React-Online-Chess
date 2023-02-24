@@ -49,7 +49,9 @@ const initialBoard = [
 
 class Board {
     constructor(){
-        this.board = initialBoard;
+        this.board = initialBoard; 
+        this.width = 8;
+        this.height = 8;
     }
 
     ///Params: origin: {x, y}, destination: {x,y}
@@ -58,6 +60,7 @@ class Board {
         let piece = this.board[origin.x][origin.y];
         this.board[origin.x][origin.y] = 'X';
         this.board[destination.x][destination.y] = piece;
+        piece.coords = {x: destination.x, y: destination.y};
         // TODO: check to start a prompt here if a pawn reaches the end of the board maybe 
     }
 }

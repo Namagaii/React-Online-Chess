@@ -1,6 +1,6 @@
 import Board from "../logic/board.js";
 import Square from "./square.js";
-import { getMoves } from "../logic/index.js";
+import { changeTurn, getMoves } from "../logic/index.js";
 
 let sourcePieceEl;
 let allowDropEvent = false;
@@ -34,7 +34,7 @@ export const handleDrop = (event, targetCoords) => {
         let sourcePiece;
         if (!event.dataTransfer.getData("sourcePieceData")){
             // Reset all values here if data in dataTransfer is bad and return early
-            console.warn("Value at address sourcePieceData was not valid.")
+            console.warn("Value at local storage address sourcePieceData was not valid.")
             sourcePieceEl.style.opacity = 1;
             sourcePieceEl = "";
             allowDropEvent = false;
@@ -43,21 +43,27 @@ export const handleDrop = (event, targetCoords) => {
             sourcePiece = JSON.parse(event.dataTransfer.getData("sourcePieceData"));
         }
         let wasValid = false; // Was the attempted move valid
-        // Check if move is on the list of valid moves
-        sourcePiece.moveList.forEach(validMove => {
+        if(sourcePiece === "X" || !sourcePiece){
+            console.log(`Source piece in handle drop function was invalid, Source Piece: ${sourcePiece}`);
+        } else {
+            // Check if move is on the list of valid moves
+            sourcePiece.moveList.forEach(validMove => {
             if (validMove.x === targetCoords.x && validMove.y === targetCoords.y){
-                //Change the stored board
-                Board.movePiece({ x: sourcePiece.coords.x, y: sourcePiece.coords.y }, { x: validMove.x, y: validMove.y });
-                //Destination
-                Square.setContent(validMove.x, validMove.y, sourcePiece);
-                //Source
-                Square.setContent(sourcePiece.coords.x, sourcePiece.coords.y);
-                wasValid = true;
-            }
-        });
-        if (!wasValid) { if (sourcePieceEl) {sourcePieceEl.style.opacity = 1;} }
-        Square.disableAllIndicators();
-        event.dataTransfer.setData("sourcePieceData", "");
+                    //Change the stored board
+                    Board.movePiece({ x: sourcePiece.coords.x, y: sourcePiece.coords.y }, { x: validMove.x, y: validMove.y });
+                    //Destination
+                    Square.setContent(validMove.x, validMove.y, sourcePiece);
+                    //Source
+                    Square.setContent(sourcePiece.coords.x, sourcePiece.coords.y);
+                    wasValid = true;
+                    changeTurn();
+                }
+            });
+            if (!wasValid) { if (sourcePieceEl) {sourcePieceEl.style.opacity = 1;} }
+            Square.disableAllIndicators();
+            event.dataTransfer.setData("sourcePieceData", "");
+            sourcePiece.moveList = [];
+        }
     }
     if (sourcePieceEl) {sourcePieceEl.style.opacity = 1;} else {console.warn("sourcePieceEl not initialized");}
     sourcePieceEl = "";

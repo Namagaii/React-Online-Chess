@@ -37,12 +37,12 @@ const generateAltText = (pieceInfo) => {
 
 function Piece(props) {
     let piece = props.piece;
-    if (piece){
+    if (piece !== "X"){
         piece.setCoords(props.coords.x, props.coords.y);
     } else {
         console.warn("Piece component initialized without accompaning piece object. Attempting to find piece object.")
         piece = Board.board[props.coords.x][props.coords.y];
-        if (!piece){
+        if (piece === "X"){
             console.warn(`No piece found at coords: (${props.coords.x}, ${props.coords.y}) returning nothing.`)
             return "";
         }
